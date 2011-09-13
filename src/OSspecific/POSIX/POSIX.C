@@ -53,7 +53,10 @@ Description
 #include <sys/socket.h>
 #include <netdb.h>
 #include <dlfcn.h>
+#ifndef darwin
 #include <link.h>
+#else
+#endif
 
 #include <netinet/in.h>
 
@@ -1137,6 +1140,14 @@ void* Foam::dlOpen(const fileName& lib)
     }
     void* handle = ::dlopen(lib.c_str(), RTLD_LAZY|RTLD_GLOBAL);
 
+#ifdef darwin
+    if(!handle && lib.ext()=="so") {
+        fileName lName=lib.lessExt()+".dylib";
+        handle = 
+            dlopen(lName.c_str(), RTLD_LAZY|RTLD_GLOBAL);
+    }
+#endif
+
     if (POSIX::debug)
     {
         std::cout
@@ -1223,9 +1234,15 @@ static int collectLibsCallback
     void *data
 )
 {
+#ifdef darwin
+    WarningIn("collectLibsCallback")
+        << "Not yet implemented for Mac OS X"
+            << Foam::endl;
+#else
     Foam::DynamicList<Foam::fileName>* ptr =
         reinterpret_cast<Foam::DynamicList<Foam::fileName>*>(data);
     ptr->append(info->dlpi_name);
+#endif
     return 0;
 }
 
@@ -1233,7 +1250,13 @@ static int collectLibsCallback
 Foam::fileNameList Foam::dlLoaded()
 {
     DynamicList<fileName> libs;
+#ifdef darwin
+    WarningIn("dlLoaded")
+        << "Not yet implemented for Mac OS X"
+            << endl;
+#else
     dl_iterate_phdr(collectLibsCallback, &libs);
+#endif
     if (POSIX::debug)
     {
         std::cout

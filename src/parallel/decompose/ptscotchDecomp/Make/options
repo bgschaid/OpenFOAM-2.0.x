@@ -7,5 +7,9 @@ EXE_INC = \
     -I/usr/include/scotch \
     -I../decompositionMethods/lnInclude
 
+ifneq ($(WM_ARCH_BASE),darwin)
+RTLIB=-lrt
+endif
+
 LIB_LIBS = \
-    -L$(FOAM_EXT_LIBBIN)/$(FOAM_MPI) -lptscotch -lptscotcherrexit -lrt
+    -L$(FOAM_EXT_LIBBIN)/$(FOAM_MPI) -lptscotch -lptscotcherrexit $(RTLIB)

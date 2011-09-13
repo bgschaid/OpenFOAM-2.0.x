@@ -6,6 +6,7 @@ EXE_INC = \
 
 EXE_LIBS = \
     -lincompressibleRASModels \
+    -lincompressibleTurbulenceModel \
     -lincompressibleTransportModels \
     -lfiniteVolume \
     -lgenericPatchFields

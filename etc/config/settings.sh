@@ -46,6 +46,10 @@ _foamAddLib()
     while [ $# -ge 1 ]
     do
         export LD_LIBRARY_PATH=$1:$LD_LIBRARY_PATH
+	if [ "$WM_ARCH_BASE" == "darwin" ]	    
+	then
+	    export DYLD_LIBRARY_PATH=$1:$DYLD_LIBRARY_PATH
+	fi
         shift
     done
 }
@@ -140,6 +144,48 @@ SunOS)
     export WM_CXXFLAGS='-mabi=64 -fPIC'
     export WM_LDFLAGS='-mabi=64 -G0'
     ;;
+
+Darwin)
+    export WM_ARCH_BASE=darwin
+    case `uname -p` in
+    powerpc)
+	export WM_ARCH=darwinPpc
+	;;
+    i386)
+	export WM_ARCH=darwinIntel
+        case $WM_ARCH_OPTION in
+        32)
+            export WM_COMPILER_LIB_ARCH=32
+            export WM_CC='gcc-mp-4.5'
+            export WM_CXX='g++-mp-4.5'
+            export WM_CFLAGS='-m32 -fPIC'
+            export WM_CXXFLAGS='-m32 -fPIC'
+            export WM_LDFLAGS='-m32'
+            ;;
+        64)
+            WM_ARCH=darwinIntel64
+            export WM_COMPILER_LIB_ARCH=64
+            export WM_CC='gcc-mp-4.5'
+            export WM_CXX='g++-mp-4.5'
+            export WM_CFLAGS='-m64 -fPIC'
+            export WM_CXXFLAGS='-m64 -fPIC'
+            export WM_LDFLAGS='-m64'
+            ;;
+        *)
+            echo Unknown WM_ARCH_OPTION $WM_ARCH_OPTION, should be 32 or 64
+            ;;
+        esac
+	;;
+    *)
+        echo "Unknown architecture "`uname -p` "for Darwin"
+    esac
+
+    #    export WM_COMPILER=
+    #    export WM_MPLIB=OPENMPI
+
+    MACOSX_DEPLOYMENT_TARGET=`sw_vers -productVersion`
+    ;;
+
 
 *)    # an unsupported operating system
     cat <<USAGE

@@ -38,7 +38,10 @@ License
 #include "IOdictionary.H"
 
 #include <dlfcn.h>
+#ifdef darwin
+#else
 #include <link.h>
+#endif
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 

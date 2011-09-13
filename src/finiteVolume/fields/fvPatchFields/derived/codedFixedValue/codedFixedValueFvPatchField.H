@@ -81,7 +81,10 @@ SourceFiles
 #include "fixedValueFvPatchFields.H"
 
 #include <dlfcn.h>
+#ifdef darwin
+#else
 #include <link.h>
+#endif
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
