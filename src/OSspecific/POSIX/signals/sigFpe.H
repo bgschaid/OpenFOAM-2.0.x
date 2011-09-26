@@ -82,7 +82,7 @@ class sigFpe
 
     // Static data members
 
-#   ifdef LINUX_GNUC
+#   if defined(LINUX_GNUC) || defined(__APPLE__)
 
         //- Handler for caught signals
         static void sigHandler(int);
